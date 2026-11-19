@@ -1,2 +1,2 @@
-{"doc_id":"DOC-PAY-001","payment_id":"PAY-2001","timestamp":"2026-11-06T12:00:00+05:00","currency":"KZT","amount_minor":15000000,"invoice_refs":["INV-1001"]}
-{"doc_id":"DOC-PAY-002","payment_id":"PAY-2002","timestamp":"2026-11-12T16:15:00+05:00","currency":"USD","amount_minor":100000,"invoice_refs":["INV-1002"]}
+{"doc_id": "DOC-P1", "payment_id": "PAY-1", "timestamp": "2026-10-10T12:00:00+00:00", "currency": "USD", "amount_minor": 100000, "invoice_refs": ["INV-1"]}
+{"doc_id": "DOC-P2", "payment_id": "PAY-2", "timestamp": "2026-10-20T12:00:00+00:00", "currency": "USD", "amount_minor": 20000, "invoice_refs": ["INV-3"]}
