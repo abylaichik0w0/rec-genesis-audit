@@ -1,0 +1,5 @@
+row_id,timestamp,account,debit_minor,credit_minor,currency,entity_id,invoice_id,payment_id
+ROW-1,2026-10-05T10:00:00+00:00,AR,100000,0,USD,ENT-1,INV-1,
+ROW-2,2026-10-06T10:00:00+00:00,AR,100000,0,USD,ENT-1,INV-2,
+ROW-3,2026-10-10T12:00:00+00:00,CASH,0,100000,USD,ENT-1,INV-1,PAY-1
+ROW-4,2026-10-15T12:00:00+00:00,AR,50000,0,USD,ENT-2,INV-3,

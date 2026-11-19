@@ -1,19 +1,36 @@
-from typing import Any, Literal, Optional
-from pydantic import BaseModel, Field
+import json
+from dataclasses import asdict, dataclass, field
+from typing import Any, Optional
 
 
-class Manifest(BaseModel):
-    schema_version: str = "1.0"
+def _ensure_int(val: Any, name: str) -> int:
+    if isinstance(val, bool) or not isinstance(val, int):
+        raise ValueError(f"Field '{name}' must be an integer, got {type(val).__name__}")
+    return val
+
+
+class _BaseSchema:
+    def model_dump(self) -> dict[str, Any]:
+        return asdict(self)
+
+    def model_dump_json(self) -> str:
+        return json.dumps(asdict(self), ensure_ascii=False)
+
+
+@dataclass
+class Manifest(_BaseSchema):
     episode_id: str
     base_currency: str
     period_start: str
     period_end: str
     timezone: str
     record_counts: dict[str, int]
+    schema_version: str = "1.0"
     rounding_rule: str = "HALF_UP"
 
 
-class LedgerRow(BaseModel):
+@dataclass
+class LedgerRow(_BaseSchema):
     row_id: str
     timestamp: str
     account: str
@@ -24,8 +41,13 @@ class LedgerRow(BaseModel):
     invoice_id: Optional[str] = None
     payment_id: Optional[str] = None
 
+    def __post_init__(self) -> None:
+        _ensure_int(self.debit_minor, "debit_minor")
+        _ensure_int(self.credit_minor, "credit_minor")
 
-class Invoice(BaseModel):
+
+@dataclass
+class Invoice(_BaseSchema):
     doc_id: str
     invoice_id: str
     entity_id: str
@@ -35,8 +57,12 @@ class Invoice(BaseModel):
     total_minor: int
     line_items: list[dict[str, Any]]
 
+    def __post_init__(self) -> None:
+        _ensure_int(self.total_minor, "total_minor")
 
-class Payment(BaseModel):
+
+@dataclass
+class Payment(_BaseSchema):
     doc_id: str
     payment_id: str
     timestamp: str
@@ -44,61 +70,99 @@ class Payment(BaseModel):
     amount_minor: int
     invoice_refs: list[str]
 
+    def __post_init__(self) -> None:
+        _ensure_int(self.amount_minor, "amount_minor")
 
-class FxRate(BaseModel):
+
+@dataclass
+class FxRate(_BaseSchema):
     date: str
     source_currency: str
     target_currency: str
-    rate: str  # Строковое десятичное число (Decimal)
+    rate: str
 
 
-class Policy(BaseModel):
+@dataclass
+class Policy(_BaseSchema):
     fx_date_rule: str
     period_boundary_rule: str
     rounding_rule: str
     amount_tolerance_minor: int = 1
 
 
-class TruthIssue(BaseModel):
+@dataclass
+class TruthIssue(_BaseSchema):
     issue_id: str
-    type: Literal[
-        "duplicate_invoice",
-        "missed_or_partial_payment",
-        "wrong_fx_date_or_rate",
-        "period_cutoff_error",
-    ]
+    type: str
     affected_ids: list[str]
     expected_amount_minor: int
     currency: str
     valid_evidence_sets: list[list[str]]
 
 
-class Finding(BaseModel):
+@dataclass
+class Finding(_BaseSchema):
     type: str
     affected_ids: list[str]
     claimed_amount_minor: int
     currency: str
-    evidence_ids: list[str] = Field(max_length=10)
-    explanation: str = Field(max_length=1000)
+    evidence_ids: list[str]
+    explanation: str
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.type, str) or not self.type.strip():
+            raise ValueError("Finding 'type' must be a non-empty string")
+        if not isinstance(self.affected_ids, list) or not all(isinstance(x, str) for x in self.affected_ids):
+            raise ValueError("Finding 'affected_ids' must be a list of strings")
+        _ensure_int(self.claimed_amount_minor, "claimed_amount_minor")
+        if not isinstance(self.currency, str) or not self.currency.strip():
+            raise ValueError("Finding 'currency' must be a non-empty string")
+        if not isinstance(self.evidence_ids, list) or not all(isinstance(x, str) for x in self.evidence_ids):
+            raise ValueError("Finding 'evidence_ids' must be a list of strings")
+        if len(self.evidence_ids) > 10:
+            raise ValueError("Max 10 evidence_ids allowed per finding")
+        if not isinstance(self.explanation, str):
+            raise ValueError("Finding 'explanation' must be a string")
+        if len(self.explanation) > 1000:
+            raise ValueError("Explanation max length is 1000 characters")
 
 
-class FindingsSubmission(BaseModel):
+@dataclass
+class FindingsSubmission(_BaseSchema):
     episode_id: str
-    findings: list[Finding] = Field(max_length=30)
+    findings: list[Finding]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.findings, list):
+            raise ValueError("'findings' must be a list")
+        if len(self.findings) > 30:
+            raise ValueError("Max 30 findings allowed per submission")
+        parsed: list[Finding] = []
+        for f in self.findings:
+            if isinstance(f, Finding):
+                parsed.append(f)
+            elif isinstance(f, dict):
+                parsed.append(Finding(**f))
+            else:
+                raise ValueError("Each finding must be a dict or Finding instance")
+        self.findings = parsed
 
 
-class Action(BaseModel):
-    tool: Literal[
-        "list_records",
-        "get_record",
-        "get_document",
-        "calculator",
-        "submit",
-    ]
-    args: dict[str, Any] = Field(default_factory=dict)
+@dataclass
+class Action(_BaseSchema):
+    tool: str
+    args: dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        allowed = {"list_records", "get_record", "get_document", "calculator", "submit"}
+        if self.tool not in allowed:
+            raise ValueError(f"Unknown tool: {self.tool}")
+        if not isinstance(self.args, dict):
+            raise ValueError("'args' must be a dict")
 
 
-class TrajectoryStep(BaseModel):
+@dataclass
+class TrajectoryStep(_BaseSchema):
     episode_id: str
     step: int
     action: dict[str, Any]
