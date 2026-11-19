@@ -1,0 +1,12 @@
+{
+  "episode_id": "mock_ep_001",
+  "generator_version": "0.1.0-mock",
+  "injected_issues": [
+    {
+      "issue_id": "ISS-001",
+      "type": "duplicate_invoice",
+      "source_id": "INV-1001",
+      "duplicate_id": "INV-1001-DUP"
+    }
+  ]
+}
