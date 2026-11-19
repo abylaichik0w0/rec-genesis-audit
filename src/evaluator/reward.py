@@ -1,7 +1,41 @@
+from dataclasses import is_dataclass
 from typing import Any
-from pydantic import ValidationError
-from src.schemas import FindingsSubmission, Policy, TruthIssue
+from src.schemas import Finding, FindingsSubmission, Policy, TruthIssue
 from .matcher import match_findings
+
+
+def _parse_submission(raw: dict[str, Any] | FindingsSubmission) -> FindingsSubmission:
+    """Валидирует входной словарь или dataclass в FindingsSubmission со строгой проверкой типов."""
+    if isinstance(raw, FindingsSubmission):
+        sub = raw
+    elif isinstance(raw, dict):
+        allowed_top = {"episode_id", "findings"}
+        if set(raw.keys()) != allowed_top:
+            raise ValueError(f"Invalid submission keys: {set(raw.keys())}")
+        if not isinstance(raw["episode_id"], str) or not isinstance(raw["findings"], list):
+            raise ValueError("Invalid types for episode_id or findings")
+
+        parsed_findings: list[Finding] = []
+        for item in raw["findings"]:
+            if isinstance(item, Finding):
+                parsed_findings.append(item)
+                continue
+            if not isinstance(item, dict):
+                raise ValueError("Finding must be a dict")
+            # Строгая проверка: int (и не bool) для claimed_amount_minor
+            amt = item.get("claimed_amount_minor")
+            if isinstance(amt, bool) or not isinstance(amt, int):
+                raise ValueError("claimed_amount_minor must be int")
+            parsed_findings.append(Finding(**item))
+
+        sub = FindingsSubmission(episode_id=raw["episode_id"], findings=parsed_findings)
+    else:
+        raise ValueError("Unsupported submission format")
+
+    for f in sub.findings:
+        if isinstance(f.claimed_amount_minor, bool) or not isinstance(f.claimed_amount_minor, int):
+            raise ValueError("claimed_amount_minor must be int")
+    return sub
 
 
 def compute_metrics(
@@ -38,14 +72,11 @@ def evaluate_submission(
     При нарушении схемы или чужом episode_id возвращает награду -1.0.
     """
     try:
-        if isinstance(raw_submission, FindingsSubmission):
-            submission = raw_submission
-        else:
-            submission = FindingsSubmission.model_validate(raw_submission)
-    except ValidationError as exc:
+        submission = _parse_submission(raw_submission)
+    except (TypeError, ValueError, KeyError) as exc:
         return {
             "valid": False,
-            "error": f"Schema validation error: {exc.errors()}",
+            "error": f"Schema validation error: {exc}",
             "tp": 0,
             "fp": 0,
             "fn": len(truth_issues),

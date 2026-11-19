@@ -60,7 +60,7 @@ def test_duplicate_finding_rejected():
         explanation="Dup",
     )
     res = evaluate_submission(
-        raw_submission={"episode_id": "ep1", "findings": [finding.model_dump(), finding.model_dump()]},
+        raw_submission={"episode_id": "ep1", "findings": [finding, finding]},
         expected_episode_id="ep1",
         truth_issues=_sample_truth(),
         policy=_sample_policy(),
