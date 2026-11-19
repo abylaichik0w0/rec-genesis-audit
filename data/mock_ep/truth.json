@@ -1,0 +1,22 @@
+[
+  {
+    "issue_id": "ISS-001",
+    "type": "duplicate_invoice",
+    "affected_ids": [
+      "INV-1001",
+      "INV-1001-DUP"
+    ],
+    "expected_amount_minor": 15000000,
+    "currency": "KZT",
+    "valid_evidence_sets": [
+      [
+        "DOC-INV-001",
+        "DOC-INV-002"
+      ],
+      [
+        "ROW-001",
+        "ROW-003"
+      ]
+    ]
+  }
+]

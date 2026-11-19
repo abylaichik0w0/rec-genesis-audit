@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "episode_id": "mock_ep_001",
+  "base_currency": "KZT",
+  "period_start": "2026-11-01T00:00:00+05:00",
+  "period_end": "2026-11-30T23:59:59+05:00",
+  "timezone": "Asia/Almaty",
+  "record_counts": {
+    "ledger": 11,
+    "invoices": 3,
+    "payments": 2,
+    "fx": 2
+  },
+  "rounding_rule": "HALF_UP"
+}

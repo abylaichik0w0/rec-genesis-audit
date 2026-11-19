@@ -1,0 +1,6 @@
+{
+  "fx_date_rule": "transaction_date",
+  "period_boundary_rule": "strict_local_timezone",
+  "rounding_rule": "HALF_UP",
+  "amount_tolerance_minor": 1
+}
