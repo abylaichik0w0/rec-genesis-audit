@@ -1,0 +1,6 @@
+{
+  "fx_date_rule": "payment_date",
+  "period_boundary_rule": "issue_date_inclusive",
+  "rounding_rule": "HALF_UP",
+  "amount_tolerance_minor": 1
+}

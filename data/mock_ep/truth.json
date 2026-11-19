@@ -1,0 +1,35 @@
+{
+  "issues": [
+    {
+      "issue_id": "ERR-1",
+      "type": "duplicate_invoice",
+      "affected_ids": [
+        "INV-1",
+        "INV-2"
+      ],
+      "expected_amount_minor": 100000,
+      "currency": "USD",
+      "valid_evidence_sets": [
+        [
+          "DOC-I1",
+          "DOC-I2"
+        ]
+      ]
+    },
+    {
+      "issue_id": "ERR-2",
+      "type": "missed_or_partial_payment",
+      "affected_ids": [
+        "INV-3"
+      ],
+      "expected_amount_minor": 30000,
+      "currency": "USD",
+      "valid_evidence_sets": [
+        [
+          "DOC-I3",
+          "DOC-P2"
+        ]
+      ]
+    }
+  ]
+}
