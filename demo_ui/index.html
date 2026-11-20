@@ -1,1 +1,89 @@
-<!doctype html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>REC Genesis · Audit Replay</title><link rel="stylesheet" href="styles.css"></head><body><div class="shell"><header><div><span class="eyebrow">REC GENESIS / FINTECH</span><h1>Audit <em>Replay</em></h1><p>Интерактивный просмотр траекторий ИИ-аудитора</p></div><div class="upload"><label for="file">↑ Загрузить trajectories.jsonl</label><input id="file" type="file" accept=".jsonl,.json,text/plain"><button id="demo">Демо</button></div></header><section class="stats"><article><span>EPISODE</span><strong id="episode">—</strong></article><article><span>STEPS</span><strong id="steps">—</strong></article><article><span>FINDINGS</span><strong id="count">—</strong></article><article><span>F1 SCORE</span><strong id="f1">—</strong></article><article><span>TOTAL REWARD</span><strong id="reward">—</strong></article></section><main><aside><div class="section-title">TRAJECTORY <small id="counter"></small></div><div id="timeline" class="timeline"></div></aside><section class="stage"><div class="stage-top"><div><span class="eyebrow" id="kind">ACTION</span><h2 id="actionTitle">—</h2></div><span class="status" id="status">—</span></div><div class="panes"><div class="pane"><div class="pane-label">AGENT ACTION <button data-copy="action">Copy</button></div><pre id="action"></pre></div><div class="pane"><div class="pane-label">ENVIRONMENT OBSERVATION <button data-copy="observation">Copy</button></div><pre id="observation"></pre></div></div><div class="playbar"><button id="prev" aria-label="Предыдущий шаг">⟵</button><button id="play">▶ Play</button><button id="next" aria-label="Следующий шаг">⟶</button><input id="seek" type="range" min="0" max="5" value="0"><span id="position">1 / 6</span><select id="speed"><option value="2000">0.5×</option><option value="1100" selected>1×</option><option value="550">2×</option></select></div><div class="findings"><div class="section-title">FINDINGS <small>из submit / результата среды</small></div><div id="findings"></div></div></section></main><footer><span id="message">Встроенный демонстрационный эпизод · данные вымышлены</span><span>LOCAL ONLY · NO BACKEND</span></footer></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GENESIS.EXE · Audit Replay</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="badges">
+          <span class="badge badge-live"><i class="dot"></i>GENESIS.EXE</span>
+          <span class="badge">FINTECH</span>
+          <span class="badge">RL-AUDIT</span>
+        </div>
+        <h1>AUDIT <em>REPLAY</em><span class="exe">.EXE</span></h1>
+        <p>Интерактивный просмотр траекторий ИИ-аудитора · GENESIS HACKATHON 2026</p>
+      </div>
+      <div class="upload">
+        <label for="file">↑ Загрузить trajectories.jsonl</label>
+        <input id="file" type="file" accept=".jsonl,.json,text/plain">
+        <button id="demo">Демо</button>
+      </div>
+    </header>
+
+    <section class="stats">
+      <article><span>EPISODE</span><strong id="episode">—</strong></article>
+      <article><span>STEPS</span><strong id="steps">—</strong></article>
+      <article><span>FINDINGS</span><strong id="count">—</strong></article>
+      <article class="stat-accent"><span>F1 SCORE</span><strong id="f1">—</strong></article>
+      <article class="stat-accent"><span>TOTAL REWARD</span><strong id="reward">—</strong></article>
+    </section>
+
+    <main>
+      <aside>
+        <div class="section-title">TRAJECTORY <small id="counter"></small></div>
+        <div id="timeline" class="timeline"></div>
+      </aside>
+
+      <section class="stage">
+        <div class="stage-top">
+          <div>
+            <span class="eyebrow" id="kind">ACTION</span>
+            <h2 id="actionTitle">—</h2>
+          </div>
+          <span class="status" id="status">—</span>
+        </div>
+
+        <div class="panes">
+          <div class="pane">
+            <div class="pane-label">AGENT ACTION <button data-copy="action">Copy</button></div>
+            <pre id="action"></pre>
+          </div>
+          <div class="pane">
+            <div class="pane-label">ENVIRONMENT OBSERVATION <button data-copy="observation">Copy</button></div>
+            <pre id="observation"></pre>
+          </div>
+        </div>
+
+        <div class="playbar">
+          <button id="prev" aria-label="Предыдущий шаг">⟵</button>
+          <button id="play">▶ Play</button>
+          <button id="next" aria-label="Следующий шаг">⟶</button>
+          <input id="seek" type="range" min="0" max="5" value="0">
+          <span id="position">1 / 6</span>
+          <select id="speed">
+            <option value="2000">0.5×</option>
+            <option value="1100" selected>1×</option>
+            <option value="550">2×</option>
+          </select>
+        </div>
+
+        <div class="findings">
+          <div class="section-title">FINDINGS <small>из submit / результата среды</small></div>
+          <div id="findings"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span id="message">Встроенный демонстрационный эпизод · данные вымышлены</span>
+      <span class="footer-status"><i class="dot"></i>система работает · LOCAL ONLY</span>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
